@@ -1,6 +1,5 @@
 package sample;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -16,16 +15,15 @@ public class PostRequestServer {
     }
 
     public void sendPost(String[] jsonNames, String[] jsonValues) throws Exception {
-//        HttpsURLConnection httpsClient = (HttpsURLConnection) new URL(url).openConnection();
-        HttpURLConnection httpsClient = (HttpURLConnection) new URL(url).openConnection();
+        HttpURLConnection httpClient = (HttpURLConnection) new URL(url).openConnection();
 
         // Add request header
-        httpsClient.setRequestMethod("POST");
-        httpsClient.setRequestProperty("User-Agent", "Mozilla/5.0");
-        httpsClient.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        httpsClient.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        httpsClient.setRequestProperty("Accept", "application/json; charset=UTF-8");
-        httpsClient.setDoOutput(true);
+        httpClient.setRequestMethod("POST");
+        httpClient.setRequestProperty("User-Agent", "Mozilla/5.0");
+        httpClient.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        httpClient.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        httpClient.setRequestProperty("Accept", "application/json; charset=UTF-8");
+        httpClient.setDoOutput(true);
 
         // JSON String format
         StringBuilder jsonStringBuilder = new StringBuilder();
@@ -38,6 +36,7 @@ public class PostRequestServer {
                     .append(jsonValues[i])
                     .append("\",\"");
         }
+
         jsonStringBuilder.delete(jsonStringBuilder.length() - 2, jsonStringBuilder.length());
         jsonStringBuilder.append("}");
 
@@ -45,13 +44,13 @@ public class PostRequestServer {
         System.out.println(jsonStr);
 
         // Send post request
-        try(OutputStream os = httpsClient.getOutputStream()) {
+        try(OutputStream os = httpClient.getOutputStream()) {
             byte[] input = jsonStr.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 
         try (BufferedReader in = new BufferedReader(
-                new InputStreamReader(httpsClient.getInputStream()))) {
+                new InputStreamReader(httpClient.getInputStream()))) {
             StringBuilder response = new StringBuilder();
             String responseLine;
 

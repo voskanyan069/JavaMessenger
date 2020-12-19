@@ -54,7 +54,7 @@ public class SignupController {
             } else if (password.contains(" ")) {
                 errorText.setText("Please enter the correct password");
             } else {
-                GetRequestServer getRequestServer = new GetRequestServer("http://mighty-inlet-45066.herokuapp.com/get_users");
+                GetRequestServer getRequestServer = new GetRequestServer(CONFIG.URL + "/get_users");
                 try {
                     JSONArray users = getRequestServer.sendUsersGetRequest();
 
@@ -67,12 +67,12 @@ public class SignupController {
                         }
                     }
 
-                    PostRequestServer postRequestServer = new PostRequestServer("http://mighty-inlet-45066.herokuapp.com/add_user");
+                    PostRequestServer postRequestServer = new PostRequestServer(CONFIG.URL + "/add_user");
                     try {
                         postRequestServer.sendPost(new String[]{"username", "password"}, new String[]{username, password});
                         new CurrentUser(username, password);
                         ChangeScene.changeScreen(getClass(), "messenger.fxml", actionEvent,
-                                new int[]{1200, 800}, new int[]{400, 600});
+                                new int[]{400, 600}, new int[]{1200, 800});
                     } catch (Exception e) {
                         System.out.println("Error: " + e.getMessage());
                     }

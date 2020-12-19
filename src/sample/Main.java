@@ -18,6 +18,8 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.setMinWidth(500);
         primaryStage.setMinHeight(300);
+        primaryStage.setWidth(640);
+        primaryStage.setHeight(400);
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

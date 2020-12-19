@@ -1,33 +1,25 @@
 package sample;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
-    private String username;
-    private String password;
+    private final String username;
+    private final static List<String> usernames = new ArrayList<>();
 
-    public static class Builder {
-        private String username;
-        private String password;
-
-        public Builder username(String username) {
-            this.username = username;
-
-            return this;
-        }
-
-        public Builder password(String password) {
-            this.password = password;
-
-            return this;
-        }
-
-        public User build() {
-            User user = new User();
-            user.username = this.username;
-            user.password = this.password;
-
-            return user;
-        }
+    public User(String username) {
+        this.username = username;
     }
 
-    private User() { }
+    public static void addUsernameToList(String username) {
+        usernames.add(username);
+    }
+
+    public static List<String> getUsernames() {
+        return usernames;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }

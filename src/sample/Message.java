@@ -4,47 +4,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Message {
-    static List<Message> list = new ArrayList<>();
-    static List<String> dateList = new ArrayList<>();
-    static List<String> authorList = new ArrayList<>();
-    static List<String> textList = new ArrayList<>();
-    static int afterParam;
+    private static final List<Message> messagesList = new ArrayList<>();
+    private static int afterParam;
+    private final String text;
+    private final String author;
+    private final String date;
 
-    public Message(String date, int after, String author, String text) {}
+    public Message(String date, int after, String author, String text) {
+        this.text = text;
+        this.author = author;
+        this.date = date;
+    }
 
-    public static List<Message> getList() {
-        return list;
+    public static List<Message> getMessagesList() {
+        return messagesList;
     }
     
     public static void addToList(String date, int after, String author, String text) {
         Message message = new Message(date, after, author, text);
         afterParam = after;
-        list.add(message);
-        dateList.add(date);
-        authorList.add(author);
-        textList.add(text);
+        messagesList.add(message);
     }
 
     public static void clearList() {
-        list.clear();
-        dateList.clear();
-        authorList.clear();
-        textList.clear();
-    }
-    
-    public static String getDate(int index) {
-        return dateList.get(index);
-    }
-
-    public static String getAuthor(int index) {
-        return authorList.get(index);
-    }
-
-    public static String getText(int index) {
-        return textList.get(index);
+        messagesList.clear();
     }
 
     public static int getAfterParam() {
         return afterParam;
+    }
+
+    public static void setAfterParam(int afterParam) {
+        Message.afterParam = afterParam;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getText() {
+        return text;
     }
 }

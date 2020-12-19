@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,7 @@ public class GetRequestServer {
     private String url;
     private final String tempUrl;
     private int after = 0;
+    private static HttpURLConnection httpMessagesClient;
 
     public GetRequestServer(String url) {
         this.url = url;
@@ -23,15 +25,14 @@ public class GetRequestServer {
     }
 
     public JSONArray sendUsersGetRequest() throws IOException {
-//        HttpsURLConnection httpsClient = (HttpsURLConnection) new URL(url).openConnection();
-        HttpURLConnection httpsClient = (HttpURLConnection) new URL(url).openConnection();
-        httpsClient.setRequestMethod("GET");
-        httpsClient.setRequestProperty("User-Agent", "Mozilla/5.0");
+        HttpURLConnection httpUsersClient = (HttpURLConnection) new URL(url).openConnection();
+        httpUsersClient.setRequestMethod("GET");
+        httpUsersClient.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-        int responseCode = httpsClient.getResponseCode();
+        int responseCode = httpUsersClient.getResponseCode();
         if (responseCode == 200) {
             try {
-                String response = getResponseFromRequest(httpsClient);
+                String response = getResponseFromRequest(httpUsersClient);
                 JSONObject jsonObject = new JSONObject(response);
 
                 return (JSONArray) jsonObject.get("users");
@@ -40,17 +41,16 @@ public class GetRequestServer {
         return new JSONArray();
     }
 
-    public void sendMessagesGetRequest(int afterParam) throws IOException {
-        url = tempUrl + "?after=" + (afterParam);
-//        HttpsURLConnection httpClient = (HttpsURLConnection) new URL(url).openConnection();
-        HttpURLConnection httpClient = (HttpURLConnection) new URL(url).openConnection();
-        httpClient.setRequestMethod("GET");
-        httpClient.setRequestProperty("User-Agent", "Mozilla/5.0");
+    public void sendMessagesGetRequest(String chatName, int afterParam) throws IOException {
+        url = tempUrl + "?after=" + afterParam + "&chat=" + chatName;
+        httpMessagesClient = (HttpURLConnection) new URL(url).openConnection();
+        httpMessagesClient.setRequestMethod("GET");
+        httpMessagesClient.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-        int responseCode = httpClient.getResponseCode();
+        int responseCode = httpMessagesClient.getResponseCode();
         if (responseCode == 200) {
             try {
-                String response = getResponseFromRequest(httpClient);
+                String response = getResponseFromRequest(httpMessagesClient);
 
                 Message.clearList();
                 JSONObject jsonObject = new JSONObject(response);
@@ -72,6 +72,10 @@ public class GetRequestServer {
                 after = messages.getJSONObject(messages.length() - 1).getInt("time");
             } catch (JSONException ignored) {}
         }
+    }
+
+    public static void disconnectInChatChange() {
+        httpMessagesClient.disconnect();
     }
 
     private String getResponseFromRequest(HttpURLConnection httpClient) throws IOException {

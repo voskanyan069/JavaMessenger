@@ -56,7 +56,7 @@ public class LoginController {
             } else if (password.contains(" ")) {
                 errorText.setText("Please enter the correct password");
             } else {
-                GetRequestServer getRequestServer = new GetRequestServer("http://mighty-inlet-45066.herokuapp.com/get_users");
+                GetRequestServer getRequestServer = new GetRequestServer(CONFIG.URL + "/get_users");
                 try {
                     JSONArray users = getRequestServer.sendUsersGetRequest();
 
