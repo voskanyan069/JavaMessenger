@@ -30,6 +30,15 @@ public class MessengerController {
     private SplitPane subContainer;
 
     @FXML
+    private Button createGroupBtn;
+
+    @FXML
+    private Button logoutBtn;
+
+    @FXML
+    private Button refreshBtn;
+
+    @FXML
     private TextArea messagesList;
 
     @FXML
@@ -45,26 +54,26 @@ public class MessengerController {
     private Button sendMessageBtn;
 
     private String chatName = "Admin";
+    private boolean sendMessagesRequest = true;
 
     @FXML
     void initialize() {
-//        System.out.println(Crypt.crypt("Hello World"));
-//        System.out.println(Crypt.decrypt("0110111 0011010 0010011 0010011 0010000 011111 0101000 0010000 0001101 0010011 0011011"));
-
         getMessages();
-        getUsers();
+        getUsers(new GetRequestServer(Config.URL + "/get_users"));
         chatChangeListener();
         sendMessage();
+        createGroup();
+        logout();
+        refreshUsersList();
         scrollToBottom();
     }
 
-    private void getUsers() {
-        GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
-
+    private void getUsers(GetRequestServer getRequestServer) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 try {
+                    usersList.getItems().clear();
                     JSONArray jsonUsers = getRequestServer.sendUsersGetRequest();
                     addUsersToList(jsonUsers);
 
@@ -79,6 +88,31 @@ public class MessengerController {
         };
 
         new Thread(r).start();
+    }
+
+    private void createGroup() {
+
+    }
+
+    private void logout() {
+        logoutBtn.setOnAction(actionEvent -> {
+            try {
+                ChangeScene.changeScreen(getClass(), "login.fxml", actionEvent,
+                        new int[]{500, 300}, new int[]{640, 400});
+
+//                TODO: CLEAR USERS LIST
+                sendMessagesRequest = false;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        });
+    }
+
+    private void refreshUsersList() {
+        refreshBtn.setOnAction(actionEvent -> {
+//            TODO: CLEAR USERS LIST
+            getUsers(new GetRequestServer(Config.URL + "/get_users"));
+        });
     }
 
     private void addUsersToList(JSONArray jsonUsers) {
@@ -130,7 +164,7 @@ public class MessengerController {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (sendMessagesRequest) {
                     try {
                         getRequestServer.sendMessagesGetRequest(chatName, Message.getAfterParam() + 1);
                         System.out.println("Request sent");
