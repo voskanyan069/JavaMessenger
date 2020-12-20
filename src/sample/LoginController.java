@@ -56,7 +56,7 @@ public class LoginController {
             } else if (password.contains(" ")) {
                 errorText.setText("Please enter the correct password");
             } else {
-                GetRequestServer getRequestServer = new GetRequestServer(CONFIG.URL + "/get_users");
+                GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
                 try {
                     JSONArray users = getRequestServer.sendUsersGetRequest();
 

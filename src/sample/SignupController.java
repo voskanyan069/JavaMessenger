@@ -54,7 +54,7 @@ public class SignupController {
             } else if (password.contains(" ")) {
                 errorText.setText("Please enter the correct password");
             } else {
-                GetRequestServer getRequestServer = new GetRequestServer(CONFIG.URL + "/get_users");
+                GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
                 try {
                     JSONArray users = getRequestServer.sendUsersGetRequest();
 
@@ -67,7 +67,7 @@ public class SignupController {
                         }
                     }
 
-                    PostRequestServer postRequestServer = new PostRequestServer(CONFIG.URL + "/add_user");
+                    PostRequestServer postRequestServer = new PostRequestServer(Config.URL + "/add_user");
                     try {
                         postRequestServer.sendPost(new String[]{"username", "password"}, new String[]{username, password});
                         new CurrentUser(username, password);

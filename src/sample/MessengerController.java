@@ -48,6 +48,9 @@ public class MessengerController {
 
     @FXML
     void initialize() {
+//        System.out.println(Crypt.crypt("Hello World"));
+//        System.out.println(Crypt.decrypt("0110111 0011010 0010011 0010011 0010000 011111 0101000 0010000 0001101 0010011 0011011"));
+
         getMessages();
         getUsers();
         chatChangeListener();
@@ -56,7 +59,7 @@ public class MessengerController {
     }
 
     private void getUsers() {
-        GetRequestServer getRequestServer = new GetRequestServer(CONFIG.URL + "/get_users");
+        GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
 
         Runnable r = new Runnable() {
             @Override
@@ -96,7 +99,7 @@ public class MessengerController {
                     public void changed(ObservableValue<? extends String> observableValue,
                                         final String oldValue, final String newValue) {
                         System.out.println("Selected: " + newValue);
-                        chatName = CONFIG.sortString(CurrentUser.getUsername() + newValue);
+                        chatName = Config.sortString(CurrentUser.getUsername() + newValue);
                         GetRequestServer.disconnectInChatChange();
                         messagesList.setText("");
                         Message.setAfterParam(0);
@@ -112,7 +115,7 @@ public class MessengerController {
         sendMessageBtn.setOnAction(actionEvent -> {
             String messageText = messageInput.getText();
                 if (!messageText.equals("")) {
-                    SendMessage.sendMessage(CurrentUser.getUsername(), messageText, chatName);
+                    SendMessage.sendMessage(CurrentUser.getUsername(), Crypt.crypt(messageText), chatName);
                     System.out.println("Message sent to server");
 
                     messageInput.setText("");
@@ -122,7 +125,7 @@ public class MessengerController {
     }
 
     private void getMessages() {
-        GetRequestServer getRequestServer = new GetRequestServer(CONFIG.URL + "/get_messages");
+        GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_messages");
 
         Runnable r = new Runnable() {
             @Override
@@ -132,7 +135,7 @@ public class MessengerController {
                         getRequestServer.sendMessagesGetRequest(chatName, Message.getAfterParam() + 1);
                         System.out.println("Request sent");
                         for (Message message : Message.getMessagesList()) {
-                            messagesList.appendText("\n" + message.getDate() + " | " + message.getAuthor() + "\n" + message.getText() + "\n");
+                            messagesList.appendText("\n" + message.getDate() + " | " + message.getAuthor() + "\n" + Crypt.decrypt(message.getText()) + "\n");
                         }
                         Thread.sleep(2000);
                     } catch (Exception e) {
