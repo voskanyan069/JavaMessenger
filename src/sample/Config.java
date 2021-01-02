@@ -7,6 +7,7 @@ public class Config {
     static int PORT = 5000;
     static String URL;
 //    static final String URL = "http://mighty-inlet-45066.herokuapp.com";
+    static String currentUsername;
 
     static {
         updateUrl();

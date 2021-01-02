@@ -118,7 +118,7 @@ public class MessengerController {
         for (int i = 0; i < jsonUsers.length(); i++) {
             JSONObject user = jsonUsers.getJSONObject(i);
             String username = user.getString("username");
-            if (!username.equals(CurrentUser.getUsername())) {
+            if (!username.equals(Config.currentUsername)) {
                 User.addUsernameToList(username);
             }
         }
@@ -131,7 +131,7 @@ public class MessengerController {
                 usersList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
                     messagesThread.stop();
                     System.out.println("Selected: " + newValue);
-                    chatName = Config.sortString(CurrentUser.getUsername() + newValue);
+                    chatName = Config.sortString(Config.currentUsername + newValue);
                     messagesList.setText("");
                     Message.setAfterParam(0);
                     getMessages();
@@ -146,7 +146,7 @@ public class MessengerController {
         sendMessageBtn.setOnAction(actionEvent -> {
             String messageText = messageInput.getText();
                 if (!messageText.equals("")) {
-                    SendMessage.sendMessage(CurrentUser.getUsername(), Crypt.crypt(messageText), chatName);
+                    SendMessage.sendMessage(Config.currentUsername, Crypt.crypt(messageText), chatName);
                     System.out.println("Message sent to server");
 
                     messageInput.setText("");

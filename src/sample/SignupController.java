@@ -80,7 +80,7 @@ public class SignupController {
                     PostRequestServer postRequestServer = new PostRequestServer(Config.URL + "/add_user");
                     try {
                         postRequestServer.sendPost(new String[]{"username", "password"}, new String[]{username, password});
-                        new CurrentUser(username, password);
+                        Config.currentUsername = username;
                         ChangeScene.changeScreen(getClass(), "messenger.fxml", actionEvent,
                                 "Messenger", new int[]{400, 600}, new int[]{1200, 800});
                     } catch (Exception e) {

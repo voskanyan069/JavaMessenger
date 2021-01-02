@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="sample.ChangeServerController">
+   <BorderPane prefHeight="800.0">
+      <top>
+         <VBox>
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <Label text="Server host">
+               <VBox.margin>
+                  <Insets left="20.0"/>
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="hostInput" promptText="Enter your server host (Example localhost)">
+               <VBox.margin>
+                  <Insets top="10.0"/>
+               </VBox.margin>
+            </TextField>
+            <Label text="Port">
+               <VBox.margin>
+                  <Insets left="20.0" top="20.0"/>
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="portInput" promptText="Enter your server port (8000)">
+               <VBox.margin>
+                  <Insets top="10.0"/>
+               </VBox.margin>
+            </TextField>
+            <HBox alignment="CENTER" prefHeight="60.0">
+               <children>
+                  <Button fx:id="saveBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0"
+                          prefWidth="140.0" text="Save">
+                     <font>
+                        <Font name="System Bold" size="15.0"/>
+                     </font>
+                     <HBox.margin>
+                        <Insets right="10.0"/>
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="cancelBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0"
+                          prefWidth="140.0" text="Cancel">
+                     <font>
+                        <Font name="System Bold" size="15.0"/>
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0"/>
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <VBox alignment="CENTER">
+               <Label fx:id="errorText" textFill="#e44141"/>
+            </VBox>
+         </VBox>
+      </top>
+   </BorderPane>
+</VBox>

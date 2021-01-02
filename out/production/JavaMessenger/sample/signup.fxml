@@ -51,6 +51,14 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                            <HBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="changeServerBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0" prefWidth="140.0" text="Server">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                           <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
                         </Button>
