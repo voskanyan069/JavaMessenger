@@ -73,17 +73,12 @@
                <children>
                   <HBox alignment="CENTER" maxHeight="50.0" minHeight="40.0" prefHeight="40.0">
                      <children>
-                        <Button fx:id="createGroupBtn" mnemonicParsing="false" text="Create Group">
-                           <HBox.margin>
-                              <Insets right="10.0" />
-                           </HBox.margin>
-                        </Button>
                         <Button fx:id="logoutBtn" mnemonicParsing="false" text="Log out">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="refreshBtn" mnemonicParsing="false" text="Refresh">
+                        <Button fx:id="changeSeverBtn" mnemonicParsing="false" text="Change Sever">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>

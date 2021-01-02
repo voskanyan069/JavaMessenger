@@ -1,11 +1,5 @@
 package sample;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,15 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.io.IOException;
 
 public class MessengerController {
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-
     @FXML
     private BorderPane mainContainer;
 
@@ -30,13 +18,10 @@ public class MessengerController {
     private SplitPane subContainer;
 
     @FXML
-    private Button createGroupBtn;
-
-    @FXML
     private Button logoutBtn;
 
     @FXML
-    private Button refreshBtn;
+    private Button changeSeverBtn;
 
     @FXML
     private TextArea messagesList;
@@ -55,34 +40,41 @@ public class MessengerController {
 
     private String chatName = "Admin";
     private boolean sendMessagesRequest = true;
+    private boolean sendUsersRequest = true;
+    private Thread messagesThread;
 
     @FXML
     void initialize() {
         getMessages();
-        getUsers(new GetRequestServer(Config.URL + "/get_users"));
+        getUsers();
         chatChangeListener();
         sendMessage();
-        createGroup();
         logout();
-        refreshUsersList();
+        changeServer();
         scrollToBottom();
     }
 
-    private void getUsers(GetRequestServer getRequestServer) {
+    private void getUsers() {
+        GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
+        usersList.setOrientation(Orientation.VERTICAL);
+
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                try {
-                    usersList.getItems().clear();
-                    JSONArray jsonUsers = getRequestServer.sendUsersGetRequest();
-                    addUsersToList(jsonUsers);
+                while (sendUsersRequest) {
+                    try {
+                        JSONArray jsonUsers = getRequestServer.sendUsersGetRequest();
+                        System.out.println("Users request sent");
+                        addUsersToList(jsonUsers);
 
-                    ObservableList<String> users = FXCollections.observableArrayList();
-                    users.addAll(User.getUsernames());
-                    usersList.setOrientation(Orientation.VERTICAL);
-                    usersList.setItems(users);
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                        ObservableList<String> users = FXCollections.observableArrayList();
+                        users.addAll(User.getUsernames());
+                        usersList.setItems(users);
+
+                        Thread.sleep(4000);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
         };
@@ -90,28 +82,35 @@ public class MessengerController {
         new Thread(r).start();
     }
 
-    private void createGroup() {
-
-    }
-
     private void logout() {
         logoutBtn.setOnAction(actionEvent -> {
             try {
                 ChangeScene.changeScreen(getClass(), "login.fxml", actionEvent,
-                        new int[]{500, 300}, new int[]{640, 400});
+                        "Log in", new int[]{500, 300}, new int[]{640, 400});
 
 //                TODO: CLEAR USERS LIST
                 sendMessagesRequest = false;
+                sendUsersRequest = false;
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
         });
     }
 
-    private void refreshUsersList() {
-        refreshBtn.setOnAction(actionEvent -> {
-//            TODO: CLEAR USERS LIST
-            getUsers(new GetRequestServer(Config.URL + "/get_users"));
+    private void changeServer() {
+        changeSeverBtn.setOnAction(actionEvent -> {
+            try {
+                ChangeServerController.previousStage = "messenger";
+                ChangeServerController.previousTitle = "Messenger";
+                ChangeServerController.minSize = new int[]{400, 600};
+                ChangeServerController.size = new int[]{1200, 800};
+                ChangeScene.changeScreen(getClass(), "change_server.fxml", actionEvent,
+                        "Change server", new int[]{500, 300}, new int[]{640, 400});
+                sendMessagesRequest = false;
+                sendUsersRequest = false;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         });
     }
 
@@ -129,16 +128,14 @@ public class MessengerController {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                usersList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-                    public void changed(ObservableValue<? extends String> observableValue,
-                                        final String oldValue, final String newValue) {
-                        System.out.println("Selected: " + newValue);
-                        chatName = Config.sortString(CurrentUser.getUsername() + newValue);
-                        GetRequestServer.disconnectInChatChange();
-                        messagesList.setText("");
-                        Message.setAfterParam(0);
-                        getMessages();
-                    }});
+                usersList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+                    messagesThread.stop();
+                    System.out.println("Selected: " + newValue);
+                    chatName = Config.sortString(CurrentUser.getUsername() + newValue);
+                    messagesList.setText("");
+                    Message.setAfterParam(0);
+                    getMessages();
+                });
             }
         };
 
@@ -167,11 +164,11 @@ public class MessengerController {
                 while (sendMessagesRequest) {
                     try {
                         getRequestServer.sendMessagesGetRequest(chatName, Message.getAfterParam() + 1);
-                        System.out.println("Request sent");
+                        System.out.println("Messages request sent");
                         for (Message message : Message.getMessagesList()) {
                             messagesList.appendText("\n" + message.getDate() + " | " + message.getAuthor() + "\n" + Crypt.decrypt(message.getText()) + "\n");
                         }
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
@@ -179,7 +176,8 @@ public class MessengerController {
             }
         };
 
-        new Thread(r).start();
+        messagesThread = new Thread(r);
+        messagesThread.start();
     }
 
     private void scrollToBottom() {

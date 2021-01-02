@@ -33,6 +33,7 @@ public class GetRequestServer {
         if (responseCode == 200) {
             try {
                 String response = getResponseFromRequest(httpUsersClient);
+                User.clearList();
                 JSONObject jsonObject = new JSONObject(response);
 
                 return (JSONArray) jsonObject.get("users");
@@ -72,10 +73,6 @@ public class GetRequestServer {
                 after = messages.getJSONObject(messages.length() - 1).getInt("time");
             } catch (JSONException ignored) {}
         }
-    }
-
-    public static void disconnectInChatChange() {
-        httpMessagesClient.disconnect();
     }
 
     private String getResponseFromRequest(HttpURLConnection httpClient) throws IOException {

@@ -1,9 +1,5 @@
 package sample;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,15 +8,9 @@ import javafx.scene.control.TextField;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.IOException;
 
 public class LoginController {
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-
     @FXML
     private TextField usernameInput;
 
@@ -34,12 +24,31 @@ public class LoginController {
     private Button signupBtn;
 
     @FXML
+    private Button changeServerBtn;
+
+    @FXML
     private Label errorText;
 
     @FXML
     void initialize() {
         checkUser();
+        onServer();
         onSignUp();
+    }
+
+    private void onServer() {
+        changeServerBtn.setOnAction(actionEvent -> {
+            try {
+                ChangeServerController.previousStage = "login";
+                ChangeServerController.previousTitle = "Log in";
+                ChangeServerController.minSize = new int[]{500, 300};
+                ChangeServerController.size = new int[]{640, 400};
+                ChangeScene.changeScreen(getClass(), "change_server.fxml", actionEvent,
+                        "Change server", new int[]{500, 300}, new int[]{640, 400});
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        });
     }
 
     private void checkUser() {
@@ -56,8 +65,8 @@ public class LoginController {
             } else if (password.contains(" ")) {
                 errorText.setText("Please enter the correct password");
             } else {
-                GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
                 try {
+                    GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
                     JSONArray users = getRequestServer.sendUsersGetRequest();
 
                     for (int i = 0; i < users.length(); i++) {
@@ -69,7 +78,7 @@ public class LoginController {
                             errorText.setText("");
                             new CurrentUser(username, password);
                             ChangeScene.changeScreen(getClass(), "messenger.fxml", actionEvent,
-                                    new int[]{400, 600}, new int[]{1200, 800});
+                                    "Messenger", new int[]{400, 600}, new int[]{1200, 800});
                             return;
                         }
 
@@ -80,6 +89,7 @@ public class LoginController {
                         }
                     }
                 } catch (JSONException | IOException e) {
+                    errorText.setText(e.getMessage());
                     System.out.println(e.getMessage());
                 }
             }
@@ -90,7 +100,7 @@ public class LoginController {
         signupBtn.setOnAction(actionEvent -> {
             try {
                 ChangeScene.changeScreen(getClass(), "signup.fxml", actionEvent,
-                        new int[]{500, 300}, new int[]{640, 400});
+                        "Sign up", new int[]{500, 300}, new int[]{640, 400});
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }

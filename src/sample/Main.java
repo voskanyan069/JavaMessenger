@@ -20,6 +20,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(300);
         primaryStage.setWidth(640);
         primaryStage.setHeight(400);
+        primaryStage.centerOnScreen();
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
