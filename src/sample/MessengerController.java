@@ -10,12 +10,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.IOException;
 
+@SuppressWarnings("BusyWait")
 public class MessengerController {
-    @FXML
-    private BorderPane mainContainer;
-
-    @FXML
-    private SplitPane subContainer;
+    public BorderPane mainContainer;
+    public BorderPane inputContainer;
+    public SplitPane subContainer;
 
     @FXML
     private Button logoutBtn;
@@ -28,9 +27,6 @@ public class MessengerController {
 
     @FXML
     private ListView<String> usersList;
-
-    @FXML
-    private BorderPane inputContainer;
 
     @FXML
     private TextField messageInput;
@@ -58,23 +54,20 @@ public class MessengerController {
         GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_users");
         usersList.setOrientation(Orientation.VERTICAL);
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                while (sendUsersRequest) {
-                    try {
-                        JSONArray jsonUsers = getRequestServer.sendUsersGetRequest();
-                        System.out.println("Users request sent");
-                        addUsersToList(jsonUsers);
+        Runnable r = () -> {
+            while (sendUsersRequest) {
+                try {
+                    JSONArray jsonUsers = getRequestServer.sendUsersGetRequest();
+                    System.out.println("Users request sent");
+                    addUsersToList(jsonUsers);
 
-                        ObservableList<String> users = FXCollections.observableArrayList();
-                        users.addAll(User.getUsernames());
-                        usersList.setItems(users);
+                    ObservableList<String> users = FXCollections.observableArrayList();
+                    users.addAll(User.getUsernames());
+                    usersList.setItems(users);
 
-                        Thread.sleep(4000);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
+                    Thread.sleep(4000);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
             }
         };
@@ -88,7 +81,6 @@ public class MessengerController {
                 ChangeScene.changeScreen(getClass(), "login.fxml", actionEvent,
                         "Log in", new int[]{500, 300}, new int[]{640, 400});
 
-//                TODO: CLEAR USERS LIST
                 sendMessagesRequest = false;
                 sendUsersRequest = false;
             } catch (IOException e) {
@@ -124,20 +116,16 @@ public class MessengerController {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void chatChangeListener() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                usersList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-                    messagesThread.stop();
-                    System.out.println("Selected: " + newValue);
-                    chatName = Config.sortString(Config.currentUsername + newValue);
-                    messagesList.setText("");
-                    Message.setAfterParam(0);
-                    getMessages();
-                });
-            }
-        };
+        Runnable r = () -> usersList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            messagesThread.stop();
+            System.out.println("Selected: " + newValue);
+            chatName = Config.sortString(Config.currentUsername + newValue);
+            messagesList.setText("");
+            Message.setAfterParam(0);
+            getMessages();
+        });
 
         new Thread(r).start();
     }
@@ -158,20 +146,17 @@ public class MessengerController {
     private void getMessages() {
         GetRequestServer getRequestServer = new GetRequestServer(Config.URL + "/get_messages");
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                while (sendMessagesRequest) {
-                    try {
-                        getRequestServer.sendMessagesGetRequest(chatName, Message.getAfterParam() + 1);
-                        System.out.println("Messages request sent");
-                        for (Message message : Message.getMessagesList()) {
-                            messagesList.appendText("\n" + message.getDate() + " | " + message.getAuthor() + "\n" + Crypt.decrypt(message.getText()) + "\n");
-                        }
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+        Runnable r = () -> {
+            while (sendMessagesRequest) {
+                try {
+                    getRequestServer.sendMessagesGetRequest(chatName, Message.getAfterParam() + 1);
+                    System.out.println("Messages request sent");
+                    for (Message message : Message.getMessagesList()) {
+                        messagesList.appendText("\n" + message.getDate() + " | " + message.getAuthor() + "\n" + Crypt.decrypt(message.getText()) + "\n");
                     }
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
             }
         };

@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ChangeScene {
+    @SuppressWarnings("rawtypes")
     public static void changeScreen(Class thisClass, String path, ActionEvent event, String title,
                                     int[] minSize, int[] size) throws IOException {
         Parent root = FXMLLoader.load(thisClass.getResource(path));

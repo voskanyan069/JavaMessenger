@@ -37,28 +37,26 @@
                   <Insets top="10.0"/>
                </VBox.margin>
             </TextField>
-            <HBox alignment="CENTER" prefHeight="60.0">
-               <children>
-                  <Button fx:id="saveBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0"
-                          prefWidth="140.0" text="Save">
-                     <font>
+             <HBox alignment="CENTER" prefHeight="60.0">
+                 <Button fx:id="saveBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0"
+                         prefWidth="140.0" text="Save">
+                    <font>
                         <Font name="System Bold" size="15.0"/>
-                     </font>
-                     <HBox.margin>
+                    </font>
+                    <HBox.margin>
                         <Insets right="10.0"/>
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="cancelBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0"
-                          prefWidth="140.0" text="Cancel">
-                     <font>
+                    </HBox.margin>
+                 </Button>
+                 <Button fx:id="cancelBtn" alignment="CENTER" mnemonicParsing="false" prefHeight="35.0"
+                         prefWidth="140.0" text="Cancel">
+                    <font>
                         <Font name="System Bold" size="15.0"/>
-                     </font>
-                     <HBox.margin>
+                    </font>
+                    <HBox.margin>
                         <Insets left="10.0"/>
-                     </HBox.margin>
-                  </Button>
-               </children>
-            </HBox>
+                    </HBox.margin>
+                 </Button>
+             </HBox>
             <VBox alignment="CENTER">
                <Label fx:id="errorText" textFill="#e44141"/>
             </VBox>

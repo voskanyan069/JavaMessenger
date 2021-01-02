@@ -79,12 +79,9 @@ public class LoginController {
                             Config.currentUsername = username;
                             ChangeScene.changeScreen(getClass(), "messenger.fxml", actionEvent,
                                     "Messenger", new int[]{400, 600}, new int[]{1200, 800});
-                            return;
-                        }
-
-                        if (jsonUsername.equals(username) && !jsonPassword.equals(password)) {
+                        } else if (jsonUsername.equals(username)) {
                             errorText.setText("The password was incorrect");
-                        } else if (!jsonUsername.equals(username) && !jsonPassword.equals(password)) {
+                        } else if (!jsonPassword.equals(password)) {
                             errorText.setText("The username & password was incorrect");
                         }
                     }

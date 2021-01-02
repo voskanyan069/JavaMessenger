@@ -10,7 +10,7 @@ public class Message {
     private final String author;
     private final String date;
 
-    public Message(String date, int after, String author, String text) {
+    public Message(String date, String author, String text) {
         this.text = text;
         this.author = author;
         this.date = date;
@@ -21,7 +21,7 @@ public class Message {
     }
     
     public static void addToList(String date, int after, String author, String text) {
-        Message message = new Message(date, after, author, text);
+        Message message = new Message(date, author, text);
         afterParam = after;
         messagesList.add(message);
     }

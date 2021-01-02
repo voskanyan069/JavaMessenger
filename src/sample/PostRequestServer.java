@@ -14,6 +14,7 @@ public class PostRequestServer {
         this.url = url;
     }
 
+    @SuppressWarnings({"TooBroadScope", "MismatchedQueryAndUpdateOfStringBuilder"})
     public void sendPost(String[] jsonNames, String[] jsonValues) throws Exception {
         HttpURLConnection httpClient = (HttpURLConnection) new URL(url).openConnection();
 

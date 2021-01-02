@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,8 +15,6 @@ import java.util.Date;
 public class GetRequestServer {
     private String url;
     private final String tempUrl;
-    private int after = 0;
-    private static HttpURLConnection httpMessagesClient;
 
     public GetRequestServer(String url) {
         this.url = url;
@@ -44,7 +41,7 @@ public class GetRequestServer {
 
     public void sendMessagesGetRequest(String chatName, int afterParam) throws IOException {
         url = tempUrl + "?after=" + afterParam + "&chat=" + chatName;
-        httpMessagesClient = (HttpURLConnection) new URL(url).openConnection();
+        HttpURLConnection httpMessagesClient = (HttpURLConnection) new URL(url).openConnection();
         httpMessagesClient.setRequestMethod("GET");
         httpMessagesClient.setRequestProperty("User-Agent", "Mozilla/5.0");
 
@@ -69,8 +66,6 @@ public class GetRequestServer {
 
                     Message.addToList(fDate, after, author, message);
                 }
-
-                after = messages.getJSONObject(messages.length() - 1).getInt("time");
             } catch (JSONException ignored) {}
         }
     }
